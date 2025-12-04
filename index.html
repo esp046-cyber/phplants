@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filipino Trees & Plants Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .search-filter {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            background: #e0e7ff;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .plants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .plant-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .plant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+
+        .plant-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+        }
+
+        .plant-content {
+            padding: 20px;
+        }
+
+        .plant-name {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .plant-scientific {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .plant-type {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+
+        .plant-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .plant-uses {
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 700px;
+            margin: 50px auto;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6em;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            padding: 50px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .plants-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 Filipino Trees & Plants Guide</h1>
+            <p class="subtitle">Discover the Rich Flora of the Philippines</p>
+        </header>
+
+        <div class="search-filter">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search by name or use...">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Plants</button>
+                <button class="filter-btn" data-filter="tree">Trees</button>
+                <button class="filter-btn" data-filter="fruit">Fruit Trees</button>
+                <button class="filter-btn" data-filter="medicinal">Medicinal</button>
+                <button class="filter-btn" data-filter="ornamental">Ornamental</button>
+            </div>
+        </div>
+
+        <div class="plants-grid" id="plantsGrid"></div>
+        <div class="no-results" id="noResults" style="display: none;">No plants found matching your search.</div>
+    </div>
+
+    <div class="modal" id="plantModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <div class="modal-image" id="modalImage"></div>
+            <h2 class="plant-name" id="modalName"></h2>
+            <p class="plant-scientific" id="modalScientific"></p>
+            <span class="plant-type" id="modalType"></span>
+            <p class="plant-description" id="modalDescription"></p>
+            <p class="plant-uses" id="modalUses"></p>
+            <div id="modalExtra"></div>
+        </div>
+    </div>
+
+    <script>
+        const plantsData = [
+            {
+                name: "Narra",
+                scientific: "Pterocarpus indicus",
+                type: "tree",
+                icon: "🌳",
+                description: "The national tree of the Philippines, Narra is a hardwood tree known for its beautiful reddish wood.",
+                uses: "Used for high-quality furniture, construction, and musical instruments",
+                extra: "Narra trees can live for over 100 years and are found throughout the Philippines. The wood is highly prized for its durability and beautiful grain patterns."
+            },
+            {
+                name: "Mango (Mangga)",
+                scientific: "Mangifera indica",
+                type: "fruit",
+                icon: "🥭",
+                description: "Philippine mangoes are world-renowned for their sweetness and flavor, particularly the Carabao variety.",
+                uses: "Edible fruit, shade tree, leaves used in traditional ceremonies",
+                extra: "The Philippines is one of the top mango producers globally. The Carabao mango from Guimaras is considered one of the sweetest in the world."
+            },
+            {
+                name: "Sampaguita",
+                scientific: "Jasminum sambac",
+                type: "ornamental",
+                icon: "🌼",
+                description: "The national flower of the Philippines, known for its fragrant white flowers.",
+                uses: "Garlands, perfumes, traditional ceremonies, medicinal tea",
+                extra: "Sampaguita blooms year-round and is deeply embedded in Filipino culture, often used in religious offerings and weddings."
+            },
+            {
+                name: "Coconut (Niyog)",
+                scientific: "Cocos nucifera",
+                type: "fruit",
+                icon: "🥥",
+                description: "Called the 'tree of life' in the Philippines, every part of the coconut tree is useful.",
+                uses: "Food, cooking oil, building materials, crafts, copra production",
+                extra: "The Philippines is one of the world's largest coconut producers. Coconut products are essential to Filipino cuisine and economy."
+            },
+            {
+                name: "Banaba",
+                scientific: "Lagerstroemia speciosa",
+                type: "medicinal",
+                icon: "🌸",
+                description: "A flowering tree with purple blooms, highly valued in traditional medicine.",
+                uses: "Diabetes treatment, weight loss, antioxidant properties",
+                extra: "Banaba leaves have been used for centuries in Filipino traditional medicine and are now studied for blood sugar regulation."
+            },
+            {
+                name: "Bamboo (Kawayan)",
+                scientific: "Bambusa spp.",
+                type: "tree",
+                icon: "🎋",
+                description: "Fast-growing grass used extensively in Filipino construction and crafts.",
+                uses: "Construction, furniture, musical instruments, food (shoots)",
+                extra: "Over 60 bamboo species grow in the Philippines. It's one of the most sustainable building materials available."
+            },
+            {
+                name: "Anahaw",
+                scientific: "Saribus rotundifolius",
+                type: "ornamental",
+                icon: "🌴",
+                description: "An endemic palm with distinctive round fan-shaped leaves.",
+                uses: "Decorative purposes, traditional hats, fans, umbrellas",
+                extra: "Anahaw is featured in traditional Filipino art and is commonly seen in rural landscapes throughout the archipelago."
+            },
+            {
+                name: "Calamansi",
+                scientific: "Citrofortunella microcarpa",
+                type: "fruit",
+                icon: "🍋",
+                description: "A small citrus fruit essential to Filipino cuisine.",
+                uses: "Cooking, beverages, cleaning agent, natural bleach",
+                extra: "Calamansi is used in almost every Filipino household. Its juice is a staple condiment for many dishes."
+            },
+            {
+                name: "Bayabas (Guava)",
+                scientific: "Psidium guajava",
+                type: "fruit",
+                icon: "🍐",
+                description: "A tropical fruit tree with sweet aromatic fruits.",
+                uses: "Edible fruit, leaves for medicinal tea, treats diarrhea",
+                extra: "Guava leaves are rich in antioxidants and commonly used in traditional Filipino medicine for digestive issues."
+            },
+            {
+                name: "Ipil-ipil",
+                scientific: "Leucaena leucocephala",
+                type: "tree",
+                icon: "🌳",
+                description: "A fast-growing tree used for reforestation and as fodder.",
+                uses: "Firewood, animal feed, soil improvement, erosion control",
+                extra: "Ipil-ipil can fix nitrogen in soil, making it valuable for rehabilitating degraded lands."
+            },
+            {
+                name: "Lagundi",
+                scientific: "Vitex negundo",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A medicinal plant approved by the Philippine DOH for treating coughs and asthma.",
+                uses: "Cough remedy, fever reducer, pain reliever, anti-inflammatory",
+                extra: "Lagundi is one of the 10 medicinal plants endorsed by the Philippine Department of Health for herbal medicine."
+            },
+            {
+                name: "Ylang-ylang",
+                scientific: "Cananga odorata",
+                type: "ornamental",
+                icon: "🌺",
+                description: "A tree known for its extremely fragrant flowers used in perfumes.",
+                uses: "Perfume production, essential oils, aromatherapy",
+                extra: "The Philippines is a major producer of ylang-ylang essential oil, which is exported worldwide for luxury perfumes."
+            },
+            {
+                name: "Molave",
+                scientific: "Vitex parviflora",
+                type: "tree",
+                icon: "🌳",
+                description: "One of the hardest Philippine woods, symbolizing strength and resilience.",
+                uses: "Heavy construction, ship building, railway ties",
+                extra: "Molave is so durable it's used in the famous poem 'Like the Molave' by Rafael Zulueta da Costa, symbolizing national strength."
+            },
+            {
+                name: "Pandan",
+                scientific: "Pandanus amaryllifolius",
+                type: "ornamental",
+                icon: "🌾",
+                description: "An aromatic plant with long blade-like leaves used in Filipino cooking.",
+                uses: "Flavoring for rice and desserts, natural air freshener",
+                extra: "Pandan gives a distinctive vanilla-like flavor to many Filipino dishes and is essential in traditional kakanin (rice cakes)."
+            },
+            {
+                name: "Talisay",
+                scientific: "Terminalia catappa",
+                type: "tree",
+                icon: "🌳",
+                description: "A coastal tree with umbrella-like canopy providing excellent shade.",
+                uses: "Shade tree, edible seeds, traditional medicine",
+                extra: "Talisay trees are common in Philippine beaches and parks. The leaves turn red before falling, creating beautiful seasonal displays."
+            },
+            {
+                name: "Duhat (Java Plum)",
+                scientific: "Syzygium cumini",
+                type: "fruit",
+                icon: "🫐",
+                description: "A fruit tree bearing dark purple berries with a sweet-tart flavor.",
+                uses: "Edible fruit, diabetes management, antioxidant-rich",
+                extra: "Duhat season is eagerly awaited by Filipinos. The fruit stains tongues purple and is often made into wine and preserves."
+            },
+            {
+                name: "Acacia",
+                scientific: "Samanea saman",
+                type: "tree",
+                icon: "🌳",
+                description: "Known as the 'rain tree', this massive tree provides wide-spreading shade.",
+                uses: "Shade tree, ornamental, wood for furniture",
+                extra: "Acacia trees are iconic in Philippine landscapes, often seen in parks and along highways. They can live for over 100 years."
+            },
+            {
+                name: "Makahiya",
+                scientific: "Mimosa pudica",
+                type: "medicinal",
+                icon: "🌱",
+                description: "The 'shy plant' that closes its leaves when touched, used in traditional medicine.",
+                uses: "Treats wounds, anti-inflammatory, used for insomnia",
+                extra: "Children love playing with makahiya because of its sensitive leaves. It's also used to treat various ailments in folk medicine."
+            },
+            {
+                name: "Santol",
+                scientific: "Sandoricum koetjape",
+                type: "fruit",
+                icon: "🍑",
+                description: "A tropical fruit tree with fuzzy skin and sweet-sour flesh.",
+                uses: "Edible fruit, candied preserves, used in Filipino dishes",
+                extra: "Santol is a favorite Filipino fruit, eaten fresh or made into preserves. The fruit has a unique cotton-like texture."
+            },
+            {
+                name: "Gumamela (Hibiscus)",
+                scientific: "Hibiscus rosa-sinensis",
+                type: "ornamental",
+                icon: "🌺",
+                description: "A vibrant flowering plant with large colorful blooms used in traditional medicine.",
+                uses: "Ornamental, hair care, fever remedy, shoe polish",
+                extra: "Gumamela flowers come in many colors and are commonly grown in Filipino gardens. Children use the flowers to make bubbles."
+            },
+            {
+                name: "Kamias",
+                scientific: "Averrhoa bilimbi",
+                type: "fruit",
+                icon: "🥒",
+                description: "A small sour fruit tree commonly used in Filipino cooking.",
+                uses: "Souring agent for sinigang, pickles, cleaning agent",
+                extra: "Kamias is essential in Filipino cuisine as a souring ingredient. It's also used to remove stains from hands and clothes."
+            },
+            {
+                name: "Bougainvillea",
+                scientific: "Bougainvillea glabra",
+                type: "ornamental",
+                icon: "🌸",
+                description: "A thorny vine with vibrant colorful bracts popular in tropical gardens.",
+                uses: "Ornamental, hedge plant, traditional cough remedy",
+                extra: "Bougainvillea thrives in the Philippine climate and adds vibrant colors to gardens year-round. Found in almost every Filipino home."
+            },
+            {
+                name: "Malunggay (Moringa)",
+                scientific: "Moringa oleifera",
+                type: "medicinal",
+                icon: "🌿",
+                description: "Called the 'miracle tree', every part is edible and highly nutritious.",
+                uses: "Super food, boosts lactation, treats malnutrition, water purification",
+                extra: "Malunggay is one of the most nutrient-dense plants on earth. It's promoted by the WHO for fighting malnutrition."
+            },
+            {
+                name: "Kamagong",
+                scientific: "Diospyros blancoi",
+                type: "tree",
+                icon: "🌳",
+                description: "An ironwood tree producing extremely hard, dark wood prized for crafts.",
+                uses: "High-end furniture, carvings, knife handles, musical instruments",
+                extra: "Kamagong wood is so dense it sinks in water. It's highly prized for Filipino martial arts weapons and luxury furniture."
+            },
+            {
+                name: "Atis (Sugar Apple)",
+                scientific: "Annona squamosa",
+                type: "fruit",
+                icon: "🍏",
+                description: "A fruit tree with sweet, creamy white flesh inside a scaly green exterior.",
+                uses: "Edible fruit, leaves for pest control, traditional medicine",
+                extra: "Atis has a custard-like texture and is beloved by Filipinos. The seeds and leaves are used as natural insecticides."
+            },
+            {
+                name: "Balimbing (Starfruit)",
+                scientific: "Averrhoa carambola",
+                type: "fruit",
+                icon: "⭐",
+                description: "A fruit with a distinctive star shape when sliced, both decorative and edible.",
+                uses: "Fresh fruit, juice, garnish, pickling",
+                extra: "Balimbing is named for its star shape. It's refreshing and commonly eaten with salt or used as a souring agent."
+            },
+            {
+                name: "Dama de Noche",
+                scientific: "Cestrum nocturnum",
+                type: "ornamental",
+                icon: "🌼",
+                description: "Night-blooming jasmine with intensely fragrant white flowers that bloom after dark.",
+                uses: "Ornamental, natural air freshener, perfume",
+                extra: "The powerful sweet fragrance of dama de noche fills Filipino neighborhoods at night. Some find it romantic, others overwhelming."
+            },
+            {
+                name: "Fire Tree (Yakal)",
+                scientific: "Delonix regia",
+                type: "tree",
+                icon: "🌳",
+                description: "A spectacular tree covered in bright red-orange flowers during summer.",
+                uses: "Ornamental, shade tree, wood for construction",
+                extra: "When in full bloom, fire trees create a stunning canopy of red flowers, marking the Philippine summer season."
+            },
+            {
+                name: "Oregano",
+                scientific: "Coleus amboinicus",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A thick-leaved herb with a strong aromatic scent used in Filipino medicine.",
+                uses: "Cough remedy, wound healing, insect repellent, cooking spice",
+                extra: "Philippine oregano is one of the DOH-approved medicinal plants. It's commonly used to treat coughs and colds in Filipino homes."
+            },
+            {
+                name: "Kalachuchi (Plumeria)",
+                scientific: "Plumeria rubra",
+                type: "ornamental",
+                icon: "🌺",
+                description: "A fragrant flowering tree with colorful blooms, often found in cemeteries.",
+                uses: "Ornamental, leis, perfume production",
+                extra: "Despite its association with cemeteries, kalachuchi is beautiful and fragrant. The flowers are used to make Hawaiian-style leis."
+            },
+            {
+                name: "Rambutan",
+                scientific: "Nephelium lappaceum",
+                type: "fruit",
+                icon: "🔴",
+                description: "A hairy red fruit with sweet translucent flesh, related to lychee.",
+                uses: "Edible fruit, traditional medicine, dye from skin",
+                extra: "Rambutan is a popular Filipino fruit. The name comes from the Malay word for 'hair' referring to its spiky appearance."
+            },
+            {
+                name: "Dapdap",
+                scientific: "Erythrina variegata",
+                type: "tree",
+                icon: "🌳",
+                description: "A nitrogen-fixing tree with bright red flowers, used in traditional farming.",
+                uses: "Living fence, shade for coffee, improves soil fertility",
+                extra: "Dapdap is planted as a natural fence and provides shade for shade-loving crops. Its red flowers attract birds and insects."
+            },
+            {
+                name: "Papaya",
+                scientific: "Carica papaya",
+                type: "fruit",
+                icon: "🥭",
+                description: "A fast-growing tree with large melon-like fruits rich in vitamins.",
+                uses: "Edible fruit, meat tenderizer, digestive aid, green papaya salad",
+                extra: "Papaya grows abundantly in Filipino backyards. The enzyme papain is used to tenderize meat and aid digestion."
+            },
+            {
+                name: "Tambis (Makopa)",
+                scientific: "Syzygium samarangense",
+                type: "fruit",
+                icon: "🔔",
+                description: "A bell-shaped fruit tree with crunchy, mildly sweet watery fruits.",
+                uses: "Edible fruit, shade tree, ornamental",
+                extra: "Tambis is a nostalgic fruit for many Filipinos. It's refreshing and often eaten with salt. The tree provides excellent shade."
+            },
+            {
+                name: "Alibangbang",
+                scientific: "Bauhinia malabarica",
+                type: "tree",
+                icon: "🦋",
+                description: "A tree with butterfly-shaped leaves and fragrant white flowers.",
+                uses: "Ornamental, leaves for wrapping food, traditional medicine",
+                extra: "Named for its distinctive butterfly-shaped leaves, alibangbang is both beautiful and useful in Filipino culture."
+            },
+            {
+                name: "Siniguelas (Spanish Plum)",
+                scientific: "Spondias purpurea",
+                type: "fruit",
+                icon: "🍒",
+                description: "A small tart fruit tree with plum-like fruits that ripen to red.",
+                uses: "Edible fruit, preserves, vinegar production",
+                extra: "Siniguelas has a unique sour-sweet taste. It's often pickled or eaten fresh with salt and is a childhood favorite of many Filipinos."
+            },
+            {
+                name: "Tsaang Gubat",
+                scientific: "Ehretia microphylla",
+                type: "medicinal",
+                icon: "🍃",
+                description: "A medicinal shrub approved by DOH for treating stomach problems.",
+                uses: "Diarrhea treatment, stomach pain relief, mouthwash",
+                extra: "Tsaang gubat is one of the 10 DOH-approved herbal medicines in the Philippines. The leaves are brewed as tea for digestive issues."
+            },
+            {
+                name: "Mangosteen",
+                scientific: "Garcinia mangostana",
+                type: "fruit",
+                icon: "🟣",
+                description: "The 'queen of fruits' with a thick purple rind and sweet white segments.",
+                uses: "Edible fruit, antioxidant-rich, traditional medicine",
+                extra: "Mangosteen is one of the most prized tropical fruits. It grows well in Mindanao and is exported worldwide."
+            },
+            {
+                name: "Saging (Banana)",
+                scientific: "Musa acuminata",
+                type: "fruit",
+                icon: "🍌",
+                description: "An essential staple with many varieties used in Filipino cuisine.",
+                uses: "Food, cooking, desserts, leaves for wrapping, fiber for textiles",
+                extra: "Over 100 banana varieties grow in the Philippines. From saba to lakatan, bananas are integral to Filipino food and culture."
+            },
+            {
+                name: "Langka (Jackfruit)",
+                scientific: "Artocarpus heterophyllus",
+                type: "fruit",
+                icon: "🟡",
+                description: "The world's largest tree fruit with sweet yellow pods inside a spiky green exterior.",
+                uses: "Edible fruit, meat substitute, seeds are edible when cooked",
+                extra: "Jackfruit can weigh up to 35kg. Young jackfruit is used as a vegan meat substitute, while ripe fruit is sweet and fragrant."
+            },
+            {
+                name: "Lanzones",
+                scientific: "Lansium domesticum",
+                type: "fruit",
+                icon: "⚪",
+                description: "Small round fruits in clusters with translucent sweet-sour flesh.",
+                uses: "Edible fruit, skin as mosquito repellent when burned",
+                extra: "Lanzones festivals are celebrated in Camiguin and Laguna. The fruit becomes sweeter as it ripens and the skin wrinkles."
+            },
+            {
+                name: "Chico (Sapodilla)",
+                scientific: "Manilkara zapota",
+                type: "fruit",
+                icon: "🟤",
+                description: "A sweet brown fruit with grainy texture, originally source of chicle for chewing gum.",
+                uses: "Edible fruit, latex for chewing gum, wood for construction",
+                extra: "Chico trees produce a milky latex once used to make chewing gum. The fruit tastes like brown sugar and pear combined."
+            },
+            {
+                name: "Niyog-niyogan",
+                scientific: "Quisqualis indica",
+                type: "medicinal",
+                icon: "🌺",
+                description: "A climbing vine with fragrant flowers, used as a deworming treatment.",
+                uses: "Anti-parasitic, treats intestinal worms, ornamental vine",
+                extra: "Niyog-niyogan seeds are a traditional deworming remedy approved by the Philippine DOH. The flowers change color as they mature."
+            },
+            {
+                name: "Almaciga",
+                scientific: "Agathis philippinensis",
+                type: "tree",
+                icon: "🌲",
+                description: "A giant native conifer that produces Manila copal resin.",
+                uses: "Resin for varnish, lumber, traditional medicine",
+                extra: "Almaciga trees can grow over 60 meters tall. The resin was historically important for producing high-quality varnish and linoleum."
+            },
+            {
+                name: "Ilang-ilang (Ylang-ylang Variant)",
+                scientific: "Cananga odorata",
+                type: "ornamental",
+                icon: "💚",
+                description: "Similar to ylang-ylang, with drooping greenish-yellow fragrant flowers.",
+                uses: "Essential oil production, perfume, aromatherapy",
+                extra: "The name means 'flower of flowers' in Tagalog. Philippine ilang-ilang oil is prized in international perfume industry."
+            },
+            {
+                name: "Dao",
+                scientific: "Dracontomelon dao",
+                type: "tree",
+                icon: "🌳",
+                description: "A large native tree with dense wood used in traditional boat building.",
+                uses: "Boat construction, furniture, edible fruits",
+                extra: "Dao wood is termite-resistant and durable. It was traditionally used for building bancas (Filipino outrigger boats)."
+            },
+            {
+                name: "Tibig",
+                scientific: "Ficus nota",
+                type: "tree",
+                icon: "🌳",
+                description: "A fig tree with edible fruits and bark used for making traditional paper.",
+                uses: "Edible figs, bark for paper, traditional medicine",
+                extra: "Tibig bark was used to make amate paper in pre-colonial Philippines. The tree provides food for wildlife."
+            },
+            {
+                name: "Antipolo",
+                scientific: "Artocarpus blancoi",
+                type: "fruit",
+                icon: "🟠",
+                description: "A native fruit tree related to jackfruit, endemic to the Philippines.",
+                uses: "Edible fruit, wood for construction, traditional offerings",
+                extra: "The city of Antipolo is named after this tree. The fruits are traditionally offered at the Antipolo Cathedral."
+            },
+            {
+                name: "Katmon",
+                scientific: "Dillenia philippinensis",
+                type: "tree",
+                icon: "🌼",
+                description: "A native tree with large white flowers and acidic fruits used in cooking.",
+                uses: "Souring agent, wood for furniture, ornamental flowers",
+                extra: "Katmon fruits are used like tamarind for souring Filipino dishes. The large flowers are strikingly beautiful."
+            },
+            {
+                name: "Agoho (Casuarina)",
+                scientific: "Casuarina equisetifolia",
+                type: "tree",
+                icon: "🌲",
+                description: "A coastal tree resembling a pine, used for coastal protection and windbreaks.",
+                uses: "Erosion control, windbreak, firewood, charcoal",
+                extra: "Agoho trees line many Philippine beaches, protecting shorelines from erosion. They thrive in sandy, salty conditions."
+            },
+            {
+                name: "Bani (White Lauan)",
+                scientific: "Shorea contorta",
+                type: "tree",
+                icon: "🌳",
+                description: "A Philippine mahogany species producing valuable hardwood timber.",
+                uses: "Construction lumber, plywood, furniture",
+                extra: "Bani is one of several lauan species endemic to the Philippines. It's commercially important but increasingly threatened by overharvesting."
+            },
+            {
+                name: "Kalumpit",
+                scientific: "Terminalia microcarpa",
+                type: "tree",
+                icon: "🌳",
+                description: "A hardwood tree with dense wood resistant to marine borers.",
+                uses: "Marine construction, bridges, heavy-duty furniture",
+                extra: "Kalumpit wood is exceptionally durable in water, making it ideal for piers and underwater structures."
+            },
+            {
+                name: "Toog",
+                scientific: "Petersianthus quadrialatus",
+                type: "tree",
+                icon: "🌳",
+                description: "A large native tree producing light, workable hardwood.",
+                uses: "Furniture, interior construction, plywood",
+                extra: "Toog trees can reach 40 meters in height. The wood is valued for its workability and attractive grain."
+            },
+            {
+                name: "Saluyot",
+                scientific: "Corchorus olitorius",
+                type: "medicinal",
+                icon: "🥬",
+                description: "A leafy vegetable with slimy texture when cooked, highly nutritious.",
+                uses: "Vegetable in soups, rich in vitamins, fiber for rope and textiles",
+                extra: "Saluyot is called 'jute mallow' internationally. It's extremely nutritious and commonly used in Filipino vegetable dishes."
+            },
+            {
+                name: "Ampalaya (Bitter Gourd)",
+                scientific: "Momordica charantia",
+                type: "medicinal",
+                icon: "🥒",
+                description: "A climbing vine bearing warty green fruits with intensely bitter taste.",
+                uses: "Vegetable, diabetes management, blood sugar control",
+                extra: "Despite its bitterness, ampalaya is beloved in Filipino cuisine. Studies show it helps regulate blood sugar levels."
+            },
+            {
+                name: "Kamote (Sweet Potato)",
+                scientific: "Ipomoea batatas",
+                type: "medicinal",
+                icon: "🍠",
+                description: "A vine with edible tuberous roots, both nutritious and versatile.",
+                uses: "Food staple, leaves as vegetables, animal feed",
+                extra: "Kamote is a Filipino staple food. The leaves (talbos ng kamote) are also eaten as a nutritious vegetable."
+            },
+            {
+                name: "Pakwan (Watermelon)",
+                scientific: "Citrullus lanatus",
+                type: "fruit",
+                icon: "🍉",
+                description: "A refreshing fruit vine cultivated throughout the lowland Philippines.",
+                uses: "Refreshing fruit, hydration, seeds are edible when roasted",
+                extra: "Watermelon thrives in the hot Philippine climate. It's a popular refreshment during summer months."
+            },
+            {
+                name: "Tamarind (Sampalok)",
+                scientific: "Tamarindus indica",
+                type: "fruit",
+                icon: "🟤",
+                description: "A tree bearing brown pod fruits with sour pulp used extensively in cooking.",
+                uses: "Souring agent for sinigang, candies, traditional medicine",
+                extra: "Sampalok is essential to Filipino sinigang. The sour fruit is also made into popular candies and drinks."
+            },
+            {
+                name: "Lipang Kalabaw",
+                scientific: "Dendrocnide meyeniana",
+                type: "tree",
+                icon: "⚠️",
+                description: "A stinging tree with heart-shaped leaves covered in painful stinging hairs.",
+                uses: "Avoided due to painful sting, ecological importance",
+                extra: "This tree's stinging hairs can cause severe pain lasting hours. Despite this, it plays an important ecological role in forests."
+            },
+            {
+                name: "Bitaog",
+                scientific: "Calophyllum inophyllum",
+                type: "tree",
+                icon: "🌳",
+                description: "A coastal tree producing oil-rich seeds used traditionally.",
+                uses: "Seed oil for lamps, traditional medicine, coastal landscaping",
+                extra: "Bitaog oil was historically used for lighting. The tree thrives in coastal areas and has medicinal properties."
+            },
+            {
+                name: "Pili",
+                scientific: "Canarium ovatum",
+                type: "fruit",
+                icon: "🌰",
+                description: "A native tree producing edible nuts, a specialty of Bicol region.",
+                uses: "Edible nuts, oil production, wood for construction",
+                extra: "Pili nuts are a premium export product from Bicol. They're buttery and nutritious, often compared to almonds."
+            },
+            {
+                name: "Gabi (Taro)",
+                scientific: "Colocasia esculenta",
+                type: "medicinal",
+                icon: "🍃",
+                description: "A root crop with large elephant-ear leaves, both tuber and leaves are edible.",
+                uses: "Root vegetable, leaves for laing, traditional swamp crop",
+                extra: "Gabi is a staple in Bicolano cuisine, especially in the famous dish 'laing' made from dried taro leaves in coconut milk."
+            },
+            {
+                name: "Kawayan Tinik (Spiny Bamboo)",
+                scientific: "Bambusa blumeana",
+                type: "tree",
+                icon: "🎋",
+                description: "A thorny bamboo species with spines on branches, very strong.",
+                uses: "Construction, fencing, handicrafts, shoots are edible",
+                extra: "This bamboo's thorns make it excellent for security fencing. It's one of the strongest bamboo species in the Philippines."
+            },
+            {
+                name: "Sili (Chili Pepper)",
+                scientific: "Capsicum frutescens",
+                type: "medicinal",
+                icon: "🌶️",
+                description: "Hot pepper plants essential to Filipino cuisine, especially Bicolano dishes.",
+                uses: "Spice, pain relief, digestive aid, pest repellent",
+                extra: "Filipino cuisine uses various chili peppers from mild to extremely hot. Bicolanos are famous for their love of spicy food."
+            },
+            {
+                name: "Luya (Ginger)",
+                scientific: "Zingiber officinale",
+                type: "medicinal",
+                icon: "🫚",
+                description: "A rhizome with pungent spicy flavor, essential in Filipino cooking and medicine.",
+                uses: "Cooking spice, treats nausea, anti-inflammatory, salabat tea",
+                extra: "Ginger tea (salabat) is a traditional Filipino remedy for colds and sore throat. It's also essential in many savory dishes."
+            },
+            {
+                name: "Tangantangan",
+                scientific: "Leucaena leucocephala",
+                type: "tree",
+                icon: "🌳",
+                description: "A fast-growing shrubby tree used for reforestation and animal fodder.",
+                uses: "Firewood, animal feed, green manure, erosion control",
+                extra: "Tangantangan is invasive but useful. It grows quickly and is used to rehabilitate degraded lands despite ecological concerns."
+            },
+            {
+                name: "Ube (Purple Yam)",
+                scientific: "Dioscorea alata",
+                type: "fruit",
+                icon: "🟣",
+                description: "A vine producing vibrant purple tubers used in famous Filipino desserts.",
+                uses: "Desserts, halo-halo, ice cream, traditional cakes",
+                extra: "Ube is iconic in Filipino desserts. Its vibrant purple color and sweet flavor make it instantly recognizable worldwide."
+            },
+            {
+                name: "Madre de Cacao",
+                scientific: "Gliricidia sepium",
+                type: "tree",
+                icon: "🌳",
+                description: "A nitrogen-fixing tree with pink flowers, used as living fences.",
+                uses: "Living fence, green manure, rat poison, firewood",
+                extra: "This tree is planted as property boundaries and enriches soil. The seeds are poisonous to rodents but livestock-safe when used properly."
+            },
+            {
+                name: "Alagaw",
+                scientific: "Premna odorata",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A shrub with aromatic leaves used in traditional Filipino medicine.",
+                uses: "Treats rheumatism, wounds, stomach problems, aromatic leaves",
+                extra: "Alagaw has a distinctive pleasant scent. It's used in traditional healing practices across the Philippines."
+            },
+            {
+                name: "Yakal",
+                scientific: "Shorea astylosa",
+                type: "tree",
+                icon: "🌳",
+                description: "One of the hardest Philippine woods, exceptionally durable and termite-resistant.",
+                uses: "Heavy construction, bridges, railroad ties, marine pilings",
+                extra: "Yakal is so hard it's difficult to work with tools. It's one of the most valuable Philippine hardwoods and extremely long-lasting."
+            },
+            {
+                name: "Apitong",
+                scientific: "Dipterocarpus grandiflorus",
+                type: "tree",
+                icon: "🌳",
+                description: "A tall dipterocarp tree producing resin and valuable hardwood.",
+                uses: "Construction lumber, plywood, resin for torches and varnish",
+                extra: "Apitong trees can reach 60 meters tall. The resin was traditionally used for lighting and waterproofing boats."
+            },
+            {
+                name: "Tindalo",
+                scientific: "Afzelia rhomboidea",
+                type: "tree",
+                icon: "🌳",
+                description: "A rare native hardwood with beautiful grain, highly prized for fine furniture.",
+                uses: "Premium furniture, wood carving, decorative panels",
+                extra: "Tindalo is endangered due to overharvesting. Its rich color and grain make it extremely valuable in woodworking."
+            },
+            {
+                name: "Balayong (Palawan Cherry)",
+                scientific: "Cassia nodosa",
+                type: "ornamental",
+                icon: "🌸",
+                description: "Palawan's signature tree with pink cherry-like blossoms in spring.",
+                uses: "Ornamental, street tree, tourism symbol of Puerto Princesa",
+                extra: "The Balayong Festival celebrates this tree's blooming season. When in bloom, streets turn pink with fallen petals."
+            },
+            {
+                name: "Dungon",
+                scientific: "Heritiera sylvatica",
+                type: "tree",
+                icon: "🌳",
+                description: "A mangrove-associated tree with extremely hard reddish wood.",
+                uses: "Heavy construction, tool handles, firewood",
+                extra: "Dungon wood is so dense it sinks in water. It's resistant to decay and highly valued for underwater construction."
+            },
+            {
+                name: "Ipil",
+                scientific: "Intsia bijuga",
+                type: "tree",
+                icon: "🌳",
+                description: "A large hardwood tree producing extremely durable timber.",
+                uses: "Ship building, heavy construction, flooring, furniture",
+                extra: "Ipil wood is naturally oily and resistant to termites. It's one of the most durable woods for outdoor use."
+            },
+            {
+                name: "Alibhon",
+                scientific: "Bauhinia purpurea",
+                type: "ornamental",
+                icon: "🦋",
+                description: "An ornamental tree with purple orchid-like flowers and butterfly leaves.",
+                uses: "Ornamental, street tree, flowers are edible",
+                extra: "Also called 'Orchid Tree' for its stunning purple blooms. The butterfly-shaped leaves are distinctive and decorative."
+            },
+            {
+                name: "Kaong (Sugar Palm)",
+                scientific: "Arenga pinnata",
+                type: "fruit",
+                icon: "🌴",
+                description: "A palm producing edible fruit and sweet sap for making sugar and vinegar.",
+                uses: "Halo-halo ingredient, sugar production, vinegar, tuba wine",
+                extra: "Kaong fruit is the translucent chewy ingredient in halo-halo. The sap is fermented into tuba, a traditional Filipino wine."
+            },
+            {
+                name: "Buri Palm",
+                scientific: "Corypha utan",
+                type: "tree",
+                icon: "🌴",
+                description: "A giant fan palm with enormous leaves used for thatching and crafts.",
+                uses: "Roofing material, hats, fans, bags, traditional crafts",
+                extra: "Buri leaves can reach 5 meters wide. They're woven into traditional Filipino hats and bags, especially in Samar."
+            },
+            {
+                name: "Talahib",
+                scientific: "Saccharum spontaneum",
+                type: "ornamental",
+                icon: "🌾",
+                description: "A tall grass with feathery plumes, colonizes open disturbed areas.",
+                uses: "Erosion control, thatching, traditional brooms",
+                extra: "Talahib quickly covers bare land, preventing erosion. Its silvery plumes are beautiful in the wind."
+            },
+            {
+                name: "Cogon",
+                scientific: "Imperata cylindrica",
+                type: "tree",
+                icon: "🌾",
+                description: "A grass species traditionally used for thatching roofs.",
+                uses: "Roof thatching, animal feed, traditional medicine",
+                extra: "Cogon roofs are traditional in rural Philippines. The grass is also used to treat wounds and fever in folk medicine."
+            },
+            {
+                name: "Marang",
+                scientific: "Artocarpus odoratissimus",
+                type: "fruit",
+                icon: "🟢",
+                description: "A fruit similar to jackfruit but smaller, with creamy aromatic flesh.",
+                uses: "Edible fruit, seeds are edible when roasted",
+                extra: "Marang is prized in Mindanao. The fruit must be eaten immediately after opening as it spoils quickly."
+            },
+            {
+                name: "Balimbing Bundok (Bilimbi)",
+                scientific: "Averrhoa bilimbi",
+                type: "fruit",
+                icon: "🥒",
+                description: "Similar to kamias, bears sour cucumber-like fruits on the trunk.",
+                uses: "Souring agent, pickles, stain remover, treats acne",
+                extra: "The sour juice is used in Filipino cooking and as a natural cleaning agent for removing rust and stains."
+            },
+            {
+                name: "Nangka Cebu",
+                scientific: "Artocarpus sericicarpus",
+                type: "fruit",
+                icon: "🟡",
+                description: "A smaller jackfruit variety endemic to Cebu and other Visayan islands.",
+                uses: "Edible fruit, seeds are edible, wood for furniture",
+                extra: "This jackfruit variety is smaller and sweeter than regular jackfruit, unique to the Visayas region."
+            },
+            {
+                name: "Bagtikan",
+                scientific: "Parashorea malaanonan",
+                type: "tree",
+                icon: "🌳",
+                description: "A dipterocarp tree growing to massive size, important timber species.",
+                uses: "Construction lumber, plywood, wood products",
+                extra: "Bagtikan is one of the tallest Philippine trees, reaching up to 65 meters. It's commercially important but threatened."
+            },
+            {
+                name: "Bagras",
+                scientific: "Eucalyptus deglupta",
+                type: "tree",
+                icon: "🌈",
+                description: "The Rainbow Eucalyptus with multicolored peeling bark, native to Mindanao.",
+                uses: "Pulpwood, ornamental, reforestation",
+                extra: "This spectacular tree's bark peels to reveal rainbow colors underneath. It's the only eucalyptus native to the Philippines."
+            },
+            {
+                name: "Malabulak",
+                scientific: "Bombax ceiba",
+                type: "tree",
+                icon: "🌺",
+                description: "A large tree with red flowers and seed pods containing silky cotton-like fibers.",
+                uses: "Kapok stuffing for pillows, life jackets, ornamental",
+                extra: "The cottony fibers are water-resistant and buoyant, traditionally used for stuffing pillows and life preservers."
+            },
+            {
+                name: "Aroma",
+                scientific: "Acacia farnesiana",
+                type: "ornamental",
+                icon: "🟡",
+                description: "A thorny shrub with intensely fragrant yellow pom-pom flowers.",
+                uses: "Perfume production, ornamental, living fence",
+                extra: "Aroma flowers are extremely fragrant and used in perfume industry. The plant makes effective thorny barriers."
+            },
+            {
+                name: "Kulitis (Amaranth)",
+                scientific: "Amaranthus viridis",
+                type: "medicinal",
+                icon: "🥬",
+                description: "A fast-growing leafy vegetable rich in nutrients.",
+                uses: "Leafy vegetable, treats inflammation, highly nutritious",
+                extra: "Kulitis is a superfood vegetable common in Filipino markets. It's easy to grow and extremely nutritious."
+            },
+            {
+                name: "Kangkong (Water Spinach)",
+                scientific: "Ipomoea aquatica",
+                type: "medicinal",
+                icon: "🥬",
+                description: "A semi-aquatic vine with hollow stems, popular Filipino vegetable.",
+                uses: "Vegetable in adobong kangkong, rich in iron and vitamins",
+                extra: "Kangkong grows rapidly in wet conditions. It's one of the most affordable and popular vegetables in the Philippines."
+            },
+            {
+                name: "Mustasa (Mustard Greens)",
+                scientific: "Brassica juncea",
+                type: "medicinal",
+                icon: "🥬",
+                description: "A leafy vegetable with slightly peppery taste.",
+                uses: "Vegetable, detoxifying properties, rich in vitamins",
+                extra: "Mustasa is common in Filipino soups and stir-fries. It's believed to have detoxifying and anti-inflammatory properties."
+            },
+            {
+                name: "Pechay (Bok Choy)",
+                scientific: "Brassica rapa chinensis",
+                type: "medicinal",
+                icon: "🥬",
+                description: "A Chinese cabbage variety widely grown and consumed in the Philippines.",
+                uses: "Vegetable in soups, stir-fries, rich in calcium",
+                extra: "Pechay is one of the most versatile vegetables in Filipino cooking. It's affordable and available year-round."
+            },
+            {
+                name: "Kalabasa (Squash)",
+                scientific: "Cucurbita moschata",
+                type: "fruit",
+                icon: "🎃",
+                description: "A vine producing large orange squash used in Filipino dishes.",
+                uses: "Vegetable in ginataang kalabasa, flowers and shoots are edible",
+                extra: "Kalabasa is essential in Filipino vegetable dishes. The flowers and young shoots are also eaten as vegetables."
+            },
+            {
+                name: "Sitaw (Yardlong Bean)",
+                scientific: "Vigna unguiculata",
+                type: "medicinal",
+                icon: "🫘",
+                description: "Long green beans growing up to 50cm, staple vegetable.",
+                uses: "Vegetable in adobong sitaw, pinakbet, good protein source",
+                extra: "Sitaw is a protein-rich vegetable essential to Filipino cuisine, especially in the popular dish pinakbet."
+            },
+            {
+                name: "Talong (Eggplant)",
+                scientific: "Solanum melongena",
+                type: "medicinal",
+                icon: "🍆",
+                description: "Purple elongated eggplant variety popular in Filipino cooking.",
+                uses: "Vegetable, tortang talong, rich in antioxidants",
+                extra: "Talong is grilled and made into tortang talong (eggplant omelet), a Filipino favorite. It's also used in pinakbet."
+            },
+            {
+                name: "Alibangbang Herb",
+                scientific: "Bauhinia scandens",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A climbing plant with butterfly-shaped leaves used medicinally.",
+                uses: "Treats skin diseases, wounds, anti-inflammatory",
+                extra: "This climbing variety of alibangbang is used in traditional medicine for treating skin conditions and inflammation."
+            },
+            {
+                name: "Sambong",
+                scientific: "Blumea balsamifera",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A medicinal shrub approved by DOH for treating kidney stones.",
+                uses: "Dissolves kidney stones, diuretic, anti-inflammatory",
+                extra: "Sambong is one of the 10 DOH-approved medicinal plants. It's commonly used as tea to prevent and dissolve kidney stones."
+            },
+            {
+                name: "Ulasimang Bato",
+                scientific: "Peperomia pellucida",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A small succulent herb used for treating gout and arthritis.",
+                uses: "Treats gout, high blood pressure, arthritis pain",
+                extra: "This humble herb is powerful against uric acid buildup. It's commonly found growing in gardens and eaten fresh or as tea."
+            },
+            {
+                name: "Serpentina",
+                scientific: "Rauvolfia serpentina",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A medicinal plant used to lower blood pressure.",
+                uses: "Blood pressure control, sedative, treats insomnia",
+                extra: "Serpentina contains reserpine, used in modern medicine for hypertension. It's one of the DOH-approved herbal medicines."
+            },
+            {
+                name: "Takip-kohol",
+                scientific: "Centella asiatica",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A small creeping herb known for wound healing properties.",
+                uses: "Wound healing, improves memory, treats skin conditions",
+                extra: "Also called 'gotu kola', this herb is used in traditional medicine and modern skincare for its healing properties."
+            },
+            {
+                name: "Bignay",
+                scientific: "Antidesma bunius",
+                type: "fruit",
+                icon: "🔴",
+                description: "A small tree bearing clusters of red to purple berries.",
+                uses: "Edible fruit, wine production, jam making",
+                extra: "Bignay fruits are tart and refreshing. They're made into wine and jams, similar to cranberry products."
+            },
+            {
+                name: "Aratiles (Jamaican Cherry)",
+                scientific: "Muntingia calabura",
+                type: "fruit",
+                icon: "🔴",
+                description: "A fast-growing tree with small sweet red berries beloved by children.",
+                uses: "Edible fruit, shade tree, antibacterial properties",
+                extra: "Aratiles is a childhood favorite in the Philippines. Children climb the tree to pick the tiny sweet berries."
+            },
+            {
+                name: "Sapal",
+                scientific: "Artocarpus nitidus",
+                type: "fruit",
+                icon: "🟢",
+                description: "A wild relative of breadfruit found in Philippine forests.",
+                uses: "Edible fruit and seeds, wood for construction",
+                extra: "Sapal is less known than its relatives but equally nutritious. It grows wild in Philippine rainforests."
+            },
+            {
+                name: "Guijo",
+                scientific: "Shorea guiso",
+                type: "tree",
+                icon: "🌳",
+                description: "A large dipterocarp tree producing extremely hard, durable wood.",
+                uses: "Heavy construction, bridges, railroad ties, furniture",
+                extra: "Guijo is one of the hardest Philippine woods, highly resistant to decay and insects. It's prized for outdoor construction."
+            },
+            {
+                name: "Red Lauan",
+                scientific: "Shorea negrosensis",
+                type: "tree",
+                icon: "🌳",
+                description: "A Philippine mahogany with reddish wood, important commercial timber.",
+                uses: "Plywood, furniture, construction, boat building",
+                extra: "Red lauan is one of the most commercially important Philippine timber species, exported worldwide as 'Philippine mahogany'."
+            },
+            {
+                name: "White Lauan",
+                scientific: "Shorea contorta",
+                type: "tree",
+                icon: "🌳",
+                description: "A lighter-colored lauan species, softer than red lauan.",
+                uses: "Plywood, interior construction, furniture",
+                extra: "White lauan is easier to work with than red lauan and is commonly used for interior woodwork and cabinetry."
+            },
+            {
+                name: "Mayapis",
+                scientific: "Shorea palosapis",
+                type: "tree",
+                icon: "🌳",
+                description: "A medium-hard lauan species with attractive wood grain.",
+                uses: "Furniture, paneling, general construction",
+                extra: "Mayapis has a beautiful grain pattern and is valued for decorative woodwork and quality furniture making."
+            },
+            {
+                name: "Almon",
+                scientific: "Shorea almon",
+                type: "tree",
+                icon: "🌳",
+                description: "A dipterocarp producing medium to hard reddish-brown wood.",
+                uses: "Construction, furniture, flooring, doors",
+                extra: "Almon is a versatile timber species used extensively in Philippine construction and furniture industries."
+            },
+            {
+                name: "Hagakhak",
+                scientific: "Dipterocarpus validus",
+                type: "tree",
+                icon: "🌳",
+                description: "A tall forest giant producing oleoresin and durable timber.",
+                uses: "Construction lumber, resin for varnish and waterproofing",
+                extra: "Hagakhak trees can tower over 50 meters. The resin was traditionally used to waterproof boats and as lamp fuel."
+            },
+            {
+                name: "Palosapis",
+                scientific: "Anisoptera thurifera",
+                type: "tree",
+                icon: "🌳",
+                description: "A commercially valuable tree producing fragrant resin.",
+                uses: "Construction, furniture, resin for incense",
+                extra: "Palosapis wood is durable and workable. The fragrant resin was historically used as incense in religious ceremonies."
+            },
+            {
+                name: "Malugai",
+                scientific: "Pometia pinnata",
+                type: "fruit",
+                icon: "🔴",
+                description: "A tall tree with edible fruits similar to lychee.",
+                uses: "Edible fruit, wood for construction, traditional medicine",
+                extra: "Malugai fruits have translucent flesh like lychee. The tree is important in traditional Pacific Islander cultures."
+            },
+            {
+                name: "Batino",
+                scientific: "Alstonia scholaris",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with soft white wood and milky latex, used medicinally.",
+                uses: "Carving, blackboards, traditional medicine for malaria",
+                extra: "Batino wood is soft and easy to carve. The bark has been used traditionally to treat malaria and fever."
+            },
+            {
+                name: "Dita",
+                scientific: "Alstonia macrophylla",
+                type: "medicinal",
+                icon: "🌳",
+                description: "A tree with bitter bark used as traditional antimalarial medicine.",
+                uses: "Treats malaria, fever, wood for light construction",
+                extra: "Dita bark contains alkaloids with antimalarial properties. It was used before modern antimalarial drugs were available."
+            },
+            {
+                name: "Betis",
+                scientific: "Madhuca betis",
+                type: "tree",
+                icon: "🌳",
+                description: "A swamp tree with extremely hard, durable wood.",
+                uses: "Marine construction, heavy furniture, tool handles",
+                extra: "Betis thrives in swampy areas. Its wood is extremely dense and resistant to rot, ideal for underwater structures."
+            },
+            {
+                name: "Malabayabas",
+                scientific: "Tristaniopsis decorticata",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with peeling colorful bark and extremely hard wood.",
+                uses: "Heavy construction, decorative wood, ornamental",
+                extra: "The bark peels to reveal colorful patterns underneath. The wood is remarkably hard and durable."
+            },
+            {
+                name: "Amugis",
+                scientific: "Koordersiodendron pinnatum",
+                type: "tree",
+                icon: "🌳",
+                description: "A native hardwood tree with attractive reddish-brown wood.",
+                uses: "Furniture, interior finishing, decorative veneer",
+                extra: "Amugis has beautiful grain patterns that polish to a high luster, making it prized for fine furniture."
+            },
+            {
+                name: "Malabonga",
+                scientific: "Xanthostemon verdugonianus",
+                type: "tree",
+                icon: "🌳",
+                description: "A mangrove-associated tree with very hard, durable wood.",
+                uses: "Construction, boat building, charcoal production",
+                extra: "Malabonga wood resists decay exceptionally well and is traditionally used in boat construction."
+            },
+            {
+                name: "Mangkono",
+                scientific: "Xanthostemon verdugonianus",
+                type: "tree",
+                icon: "🌳",
+                description: "One of the hardest and heaviest Philippine woods, nearly indestructible.",
+                uses: "Heavy construction, tool handles, premium furniture",
+                extra: "Mangkono is so hard it's nicknamed 'iron wood'. It's extremely difficult to work but incredibly durable."
+            },
+            {
+                name: "Bakawan (Mangrove)",
+                scientific: "Rhizophora mucronata",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove tree with stilt roots, crucial for coastal ecosystems.",
+                uses: "Charcoal, firewood, coastal protection, fish habitat",
+                extra: "Bakawan mangroves protect coastlines from erosion and storms while providing nursery habitat for fish."
+            },
+            {
+                name: "Bakhaw Lalaki",
+                scientific: "Rhizophora apiculata",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove species with distinctive prop roots and tannin-rich bark.",
+                uses: "Tannin extraction, charcoal, poles, coastal protection",
+                extra: "The bark is rich in tannins used for tanning leather. These mangroves are vital for coastal ecosystem health."
+            },
+            {
+                name: "Pagatpat",
+                scientific: "Sonneratia alba",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove tree with breathing roots (pneumatophores) and edible fruits.",
+                uses: "Edible fruits, coastal protection, wood for posts",
+                extra: "Pagatpat has spiky breathing roots that stick up from the mud. The fruits are eaten fresh or made into preserves."
+            },
+            {
+                name: "Nipa",
+                scientific: "Nypa fruticans",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove palm providing thatching material and sugary sap.",
+                uses: "Roof thatching, vinegar production, sugar, wrappers",
+                extra: "Nipa is essential to coastal Filipino life. The leaves are used for roofing and the sap for vinegar and sugar."
+            },
+            {
+                name: "Dangkalan",
+                scientific: "Calamus merrillii",
+                type: "tree",
+                icon: "🌴",
+                description: "A climbing rattan palm used for furniture and handicrafts.",
+                uses: "Rattan furniture, baskets, handicrafts",
+                extra: "Rattan harvested from dangkalan is exported worldwide for furniture making. It's flexible yet strong when dried."
+            },
+            {
+                name: "Bayag-usa",
+                scientific: "Calamus ornatus",
+                type: "tree",
+                icon: "🌴",
+                description: "A spiny rattan palm with ornamental value and useful canes.",
+                uses: "Walking canes, furniture components, decorative crafts",
+                extra: "This rattan species has beautiful patterns on its stems and is prized for making decorative canes."
+            },
+            {
+                name: "Katmon Gubat",
+                scientific: "Dillenia reifferscheidia",
+                type: "tree",
+                icon: "🌳",
+                description: "A wild katmon relative with smaller fruits and similar uses.",
+                uses: "Wood for furniture, fruits for souring, medicinal",
+                extra: "Katmon gubat grows in mountain forests. Its acidic fruits and flowers are used similarly to cultivated katmon."
+            },
+            {
+                name: "Agoho-dagat",
+                scientific: "Casuarina equisetifolia",
+                type: "tree",
+                icon: "🌲",
+                description: "A coastal variety of agoho specifically adapted to salt spray.",
+                uses: "Coastal windbreak, erosion control, firewood",
+                extra: "This coastal specialist thrives in harsh beach conditions, protecting inland areas from salt spray and erosion."
+            },
+            {
+                name: "Kalantas",
+                scientific: "Toona calantas",
+                type: "tree",
+                icon: "🌳",
+                description: "A fragrant hardwood tree, the Philippine cedar.",
+                uses: "Fine furniture, cigar boxes, musical instruments",
+                extra: "Kalantas has a pleasant cedar-like scent. It's highly valued for premium furniture and was historically used for cigar boxes."
+            },
+            {
+                name: "Lanete",
+                scientific: "Wrightia pubescens",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with soft white wood and fragrant white flowers.",
+                uses: "Carving, turnery, medicinal bark, ornamental",
+                extra: "Lanete wood is easy to carve and polish. The fragrant flowers are attractive and the bark has medicinal properties."
+            },
+            {
+                name: "Duguan",
+                scientific: "Myristica philippinensis",
+                type: "tree",
+                icon: "🌳",
+                description: "A nutmeg relative with red sap that looks like blood.",
+                uses: "Aromatic wood, traditional medicine, ornamental",
+                extra: "When cut, duguan 'bleeds' red sap, giving it its name. The aromatic wood is used in traditional practices."
+            },
+            {
+                name: "Nato",
+                scientific: "Palaquium luzoniense",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree producing latex and durable reddish wood.",
+                uses: "Furniture, construction, latex for chewing gum base",
+                extra: "Nato latex was historically used to make chewing gum. The wood is attractive and durable for furniture."
+            },
+            {
+                name: "Supa",
+                scientific: "Sindora supa",
+                type: "tree",
+                icon: "🌳",
+                description: "A large tree with hard wood and edible young pods.",
+                uses: "Construction, furniture, young pods are edible",
+                extra: "Supa produces large seed pods. The young tender pods are cooked and eaten as vegetables in some regions."
+            },
+            {
+                name: "Bagalangit",
+                scientific: "Mussaenda philippica",
+                type: "ornamental",
+                icon: "🌺",
+                description: "A shrub with colorful leaf-like bracts surrounding small flowers.",
+                uses: "Ornamental gardens, traditional medicine",
+                extra: "Bagalangit has showy white or pink bracts that look like large petals. It's popular in tropical gardens."
+            },
+            {
+                name: "Ixora (Santan)",
+                scientific: "Ixora coccinea",
+                type: "ornamental",
+                icon: "🔴",
+                description: "A popular hedge plant with clusters of red, orange, pink, or yellow flowers.",
+                uses: "Ornamental hedge, traditional medicine",
+                extra: "Santan is one of the most common ornamental plants in the Philippines, forming colorful hedges in gardens."
+            },
+            {
+                name: "Rosal (Rose)",
+                scientific: "Rosa chinensis",
+                type: "ornamental",
+                icon: "🌹",
+                description: "Tropical rose varieties adapted to Philippine climate.",
+                uses: "Ornamental, cut flowers, perfume, tea",
+                extra: "While roses are not native, certain varieties thrive in Philippine gardens and are popular ornamentals."
+            },
+            {
+                name: "Adelfa (Oleander)",
+                scientific: "Nerium oleander",
+                type: "ornamental",
+                icon: "🌸",
+                description: "A beautiful but highly poisonous flowering shrub.",
+                uses: "Ornamental only - all parts are toxic",
+                extra: "Despite its beauty, every part of adelfa is extremely poisonous. It's grown purely for ornamental purposes with caution."
+            },
+            {
+                name: "Cadena de Amor",
+                scientific: "Antigonon leptopus",
+                type: "ornamental",
+                icon: "💗",
+                description: "A climbing vine with heart-shaped pink flower clusters.",
+                uses: "Ornamental vine, edible tubers, erosion control",
+                extra: "The name means 'chain of love' in Spanish. The pink flowers cascade beautifully, and the tubers are edible."
+            },
+            {
+                name: "San Francisco",
+                scientific: "Codiaeum variegatum",
+                type: "ornamental",
+                icon: "🍂",
+                description: "A colorful foliage plant with leaves in yellow, red, orange, and green.",
+                uses: "Ornamental, hedge plant, indoor decoration",
+                extra: "San Francisco plants have incredibly varied leaf colors and patterns. They're popular for adding color to gardens."
+            },
+            {
+                name: "Bunga de Jolo",
+                scientific: "Quisqualis indica",
+                type: "ornamental",
+                icon: "🌺",
+                description: "A climbing vine with fragrant flowers that change color from white to pink to red.",
+                uses: "Ornamental, traditional deworming treatment",
+                extra: "The flowers emit a sweet fragrance at night and dramatically change colors as they age, creating a rainbow effect."
+            },
+            {
+                name: "Kamuning",
+                scientific: "Murraya paniculata",
+                type: "ornamental",
+                icon: "🤍",
+                description: "A fragrant flowering shrub with small white flowers and aromatic leaves.",
+                uses: "Ornamental hedge, perfume, traditional medicine",
+                extra: "Kamuning has intensely fragrant flowers used in traditional perfumes. It's often grown as a decorative hedge."
+            },
+            {
+                name: "Champaca",
+                scientific: "Magnolia champaca",
+                type: "ornamental",
+                icon: "🟡",
+                description: "A tree with golden fragrant flowers highly valued in perfumery.",
+                uses: "Perfume production, ornamental, religious offerings",
+                extra: "Champaca flowers have an exquisite fragrance and are sacred in Buddhist and Hindu traditions."
+            },
+            {
+                name: "Kalumpit (Terminalia)",
+                scientific: "Terminalia microcarpa",
+                type: "tree",
+                icon: "🌳",
+                description: "A hardwood tree related to talisay, with edible nuts.",
+                uses: "Heavy construction, edible nuts, tannin source",
+                extra: "Kalumpit wood is extremely durable in water. The nuts are edible and the bark is rich in tannins."
+            },
+            {
+                name: "Botong",
+                scientific: "Barringtonia asiatica",
+                type: "tree",
+                icon: "🌺",
+                description: "A coastal tree with large pink pom-pom flowers and square fruits.",
+                uses: "Ornamental, fish poison (traditional), coastal planting",
+                extra: "Botong has spectacular flowers that bloom at night. The fruits were traditionally used to stun fish for easy catching."
+            },
+            {
+                name: "Putat",
+                scientific: "Barringtonia racemosa",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with hanging clusters of pink flowers and edible young fruits.",
+                uses: "Young fruits are edible, medicinal, ornamental",
+                extra: "Putat young fruits are eaten as vegetables. The tree is also planted along streams for its beauty."
+            },
+            {
+                name: "Dungon-late",
+                scientific: "Heritiera littoralis",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove-associated tree with boat-shaped fruits that float in water.",
+                uses: "Boat building, furniture, coastal planting",
+                extra: "The fruits are shaped like little boats and disperse by floating in the sea. The wood is excellent for marine use."
+            },
+            {
+                name: "Buta-buta",
+                scientific: "Excoecaria agallocha",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove tree with toxic milky sap that can cause temporary blindness.",
+                uses: "Firewood, fish poison, coastal protection (avoid sap contact)",
+                extra: "The name means 'blind-blind' because the sap can cause temporary blindness if it gets in eyes. Handle with extreme caution."
+            },
+            {
+                name: "Api-api",
+                scientific: "Avicennia marina",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove with pneumatophores and salt-excreting leaves.",
+                uses: "Coastal protection, charcoal, medicinal uses",
+                extra: "Api-api leaves excrete excess salt as white crystals. The tree can survive in extremely saline conditions."
+            },
+            {
+                name: "Piagao",
+                scientific: "Xylocarpus granatum",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove tree with large woody fruits containing angular seeds.",
+                uses: "Wood for posts, seeds for oil, traditional medicine",
+                extra: "Piagao produces cannonball-sized fruits. The seeds yield oil used in traditional medicine."
+            },
+            {
+                name: "Malatangal",
+                scientific: "Cynometra ramiflora",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove tree with edible young fruits and durable wood.",
+                uses: "Edible young fruits, construction, charcoal",
+                extra: "The young fruits have a sour taste and are eaten as vegetables in coastal communities."
+            },
+            {
+                name: "Bungalon",
+                scientific: "Aegiceras corniculatum",
+                type: "tree",
+                icon: "🌴",
+                description: "A small mangrove tree with curved horn-like fruits.",
+                uses: "Coastal protection, traditional medicine, ornamental",
+                extra: "The fruits resemble small curved horns. This mangrove is important for stabilizing mudflats."
+            },
+            {
+                name: "Lanutan",
+                scientific: "Bruguiera sexangula",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove with knee-like root projections and cigar-shaped propagules.",
+                uses: "Tannin extraction, firewood, charcoal, construction",
+                extra: "Lanutan bark is extremely rich in tannins used for leather tanning. The wood makes excellent charcoal."
+            },
+            {
+                name: "Busain",
+                scientific: "Lumnitzera racemosa",
+                type: "tree",
+                icon: "🌴",
+                description: "A mangrove tree with red flowers and very hard wood.",
+                uses: "Construction poles, firewood, ornamental flowers",
+                extra: "Busain produces beautiful red flowers. The wood is hard and durable, used for construction in coastal areas."
+            },
+            {
+                name: "Bagaoro",
+                scientific: "Dracontomelon edule",
+                type: "fruit",
+                icon: "🟢",
+                description: "A tree producing edible acidic fruits similar to dao.",
+                uses: "Edible fruits, wood for construction, traditional medicine",
+                extra: "Bagaoro fruits are sour and refreshing. The tree is related to dao and produces similar useful wood."
+            },
+            {
+                name: "Durian",
+                scientific: "Durio zibethinus",
+                type: "fruit",
+                icon: "🦔",
+                description: "The notorious 'king of fruits' with creamy flesh and pungent odor.",
+                uses: "Highly prized edible fruit, seeds are edible when roasted",
+                extra: "Grown especially in Mindanao, Philippine durian is prized for its quality. The smell is polarizing but the taste is divine to enthusiasts."
+            },
+            {
+                name: "Pomelo (Suha)",
+                scientific: "Citrus maxima",
+                type: "fruit",
+                icon: "🍈",
+                description: "The largest citrus fruit, with thick rind and sweet-tart flesh.",
+                uses: "Edible fruit, rind candied, flowers for tea",
+                extra: "Davao pomelo is famous for its sweetness. The thick rind can be candied into a delicacy."
+            },
+            {
+                name: "Dalandan",
+                scientific: "Citrus aurantium",
+                type: "fruit",
+                icon: "🍊",
+                description: "A local orange variety with thin skin and sweet-tart juice.",
+                uses: "Juice, fresh eating, traditional medicine",
+                extra: "Dalandan is the most common orange in the Philippines. It's smaller and thinner-skinned than imported oranges."
+            },
+            {
+                name: "Dayap (Lime)",
+                scientific: "Citrus aurantiifolia",
+                type: "fruit",
+                icon: "🟢",
+                description: "A small green lime used extensively in Filipino cooking.",
+                uses: "Cooking, beverages, cleaning, traditional medicine",
+                extra: "Dayap is essential in Filipino cuisine for its acidic juice. It's used similarly to calamansi but is larger."
+            },
+            {
+                name: "Mansanitas",
+                scientific: "Ziziphus mauritiana",
+                type: "fruit",
+                icon: "🍏",
+                description: "A small tree bearing apple-like fruits with crisp texture.",
+                uses: "Edible fruit, traditional medicine, wood for tool handles",
+                extra: "Mansanitas means 'little apples'. The fruits are crisp and mildly sweet, popular among children."
+            },
+            {
+                name: "Macopa (Java Apple)",
+                scientific: "Syzygium samarangense",
+                type: "fruit",
+                icon: "🔔",
+                description: "A bell-shaped watery fruit with crisp white or pink flesh.",
+                uses: "Refreshing fruit, ornamental tree, shade tree",
+                extra: "Macopa is extremely refreshing and mildly sweet. It's perfect for hot weather and often eaten with salt."
+            },
+            {
+                name: "Kasoy (Cashew)",
+                scientific: "Anacardium occidentale",
+                type: "fruit",
+                icon: "🥜",
+                description: "A tree producing cashew nuts and edible apple-like fruits.",
+                uses: "Nuts, cashew apple juice, nut shell oil",
+                extra: "Both the nut and the 'apple' are edible. The cashew apple is juicy and astringent, often made into juice."
+            },
+            {
+                name: "Makupa",
+                scientific: "Syzygium aqueum",
+                type: "fruit",
+                icon: "🔔",
+                description: "A watery fruit similar to macopa but smaller and more flavorful.",
+                uses: "Edible fruit, ornamental, shade tree",
+                extra: "Makupa is sweeter than macopa with a rose-like flavor. It's less common but highly prized."
+            },
+            {
+                name: "Kasuy",
+                scientific: "Anacardium occidentale",
+                type: "fruit",
+                icon: "🍎",
+                description: "Another name for cashew, emphasizing the fruit rather than the nut.",
+                uses: "Cashew apple for juice and wine, nuts after processing",
+                extra: "The cashew apple is made into refreshing juice and wine. The nut requires careful processing to remove toxic oils."
+            },
+            {
+                name: "Kabatiti",
+                scientific: "Piper betle",
+                type: "medicinal",
+                icon: "🍃",
+                description: "A climbing vine with heart-shaped leaves used in betel chewing.",
+                uses: "Betel quid component, traditional medicine, antiseptic",
+                extra: "Kabatiti leaves are used in traditional betel nut chewing. The leaves have antiseptic properties."
+            },
+            {
+                name: "Damoro",
+                scientific: "Fagara rhetsa",
+                type: "tree",
+                icon: "🌳",
+                description: "A thorny tree with aromatic leaves and medicinal bark.",
+                uses: "Traditional medicine, aromatic wood, spice",
+                extra: "Damoro bark and leaves are aromatic and used in traditional medicine. The wood has a pleasant scent."
+            },
+            {
+                name: "Kayumanis",
+                scientific: "Cinnamomum mercadoi",
+                type: "tree",
+                icon: "🌳",
+                description: "A native cinnamon species with aromatic bark.",
+                uses: "Spice, traditional medicine, aromatic wood",
+                extra: "Philippine cinnamon is native to the archipelago. The bark is used as a spice similar to true cinnamon."
+            },
+            {
+                name: "Lunas",
+                scientific: "Lunasia amara",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A shrub with extremely bitter bark used as medicine.",
+                uses: "Antimalarial, fever remedy, digestive tonic",
+                extra: "Lunas is intensely bitter but effective as traditional medicine. It's used to treat fever and digestive problems."
+            },
+            {
+                name: "Kalatsutsi",
+                scientific: "Plumeria acuminata",
+                type: "ornamental",
+                icon: "🌺",
+                description: "A frangipani species with white fragrant flowers.",
+                uses: "Ornamental, perfume, religious offerings",
+                extra: "Similar to kalachuchi but with different flower shape. The fragrance is sweet and used in leis."
+            },
+            {
+                name: "Waling-waling",
+                scientific: "Vanda sanderiana",
+                type: "ornamental",
+                icon: "🌸",
+                description: "The 'Queen of Philippine Orchids', a rare and spectacular native orchid.",
+                uses: "Ornamental, conservation symbol, cut flowers",
+                extra: "Waling-waling is one of the world's most beautiful orchids, endemic to Mindanao. It's highly endangered and protected."
+            },
+            {
+                name: "Dendrobium",
+                scientific: "Dendrobium anosmum",
+                type: "ornamental",
+                icon: "💜",
+                description: "A fragrant native orchid with purple flowers.",
+                uses: "Ornamental, cut flowers, traditional medicine",
+                extra: "This orchid is fragrant and blooms abundantly. It's easier to grow than waling-waling and popular in gardens."
+            },
+            {
+                name: "Sanggumay",
+                scientific: "Tabernaemontana pandacaqui",
+                type: "ornamental",
+                icon: "🤍",
+                description: "A shrub with fragrant white pinwheel-shaped flowers.",
+                uses: "Ornamental, traditional medicine, perfume",
+                extra: "Sanggumay has milky sap and beautiful fragrant flowers. It's grown in gardens for its ornamental value."
+            },
+            {
+                name: "Banaba Gubat",
+                scientific: "Lagerstroemia speciosa var. flos-reginae",
+                type: "ornamental",
+                icon: "💜",
+                description: "A wild variety of banaba with showier purple flowers.",
+                uses: "Ornamental, similar medicinal uses to cultivated banaba",
+                extra: "This wild banaba has larger, more vibrant purple flowers than the cultivated variety. It's spectacular when in bloom."
+            },
+            {
+                name: "Banaba Puti",
+                scientific: "Lagerstroemia speciosa alba",
+                type: "ornamental",
+                icon: "🤍",
+                description: "A white-flowered variety of banaba.",
+                uses: "Ornamental, medicinal properties similar to purple banaba",
+                extra: "The white-flowered banaba is rare and prized by collectors. It has the same medicinal properties as the purple variety."
+            },
+            {
+                name: "Balete",
+                scientific: "Ficus balete",
+                type: "tree",
+                icon: "🌳",
+                description: "A massive strangler fig with aerial roots, considered sacred in folklore.",
+                uses: "Shade tree, ecological importance, folklore significance",
+                extra: "Baletes often start growing on other trees and eventually strangle their hosts. They're believed to be homes of supernatural beings."
+            },
+            {
+                name: "Balete Gubat",
+                scientific: "Ficus benjamina",
+                type: "tree",
+                icon: "🌳",
+                description: "A forest fig tree with glossy leaves, often used as ornamental.",
+                uses: "Ornamental tree, indoor plant, ecological importance",
+                extra: "This fig is popular as an indoor plant worldwide. In nature, it provides food for many bird and bat species."
+            },
+            {
+                name: "Hauili",
+                scientific: "Ficus septica",
+                type: "tree",
+                icon: "🌳",
+                description: "A fig tree with large leaves and milky sap used medicinally.",
+                uses: "Traditional medicine for wounds, timber, shade tree",
+                extra: "The milky sap is applied to wounds and skin conditions. The tree is fast-growing and provides excellent shade."
+            },
+            {
+                name: "Antipolo Fig",
+                scientific: "Ficus pseudopalma",
+                type: "tree",
+                icon: "🌳",
+                description: "A unique fig tree with palm-like appearance and edible fruits.",
+                uses: "Edible figs, ornamental, ecological value",
+                extra: "This unusual fig looks like a palm tree. The fruits are important food for wildlife."
+            },
+            {
+                name: "Balete Americano",
+                scientific: "Ficus elastica",
+                type: "ornamental",
+                icon: "🌳",
+                description: "The rubber tree with large glossy leaves and milky latex.",
+                uses: "Ornamental, indoor plant, historical rubber source",
+                extra: "Before rubber plantations, this tree was a rubber source. Now it's popular as an indoor ornamental plant."
+            },
+            {
+                name: "Tuai",
+                scientific: "Drypetes lasiogyna",
+                type: "tree",
+                icon: "🌳",
+                description: "A native tree with edible fruits and durable wood.",
+                uses: "Edible fruits, wood for construction, traditional medicine",
+                extra: "Tuai produces small edible fruits enjoyed by wildlife and people. The wood is useful for various purposes."
+            },
+            {
+                name: "Bansalaguin",
+                scientific: "Mimusops elengi",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with fragrant star-shaped flowers and edible berries.",
+                uses: "Ornamental, edible fruits, perfume, wood for furniture",
+                extra: "The tiny flowers are intensely fragrant. The ripe fruits are sweet and the wood is strong and durable."
+            },
+            {
+                name: "Salingbobog",
+                scientific: "Cratoxylum formosum",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with reddish wood and clusters of white flowers.",
+                uses: "Furniture, construction, ornamental flowers",
+                extra: "Salingbobog has attractive flowers and useful wood. It's found in secondary forests throughout the Philippines."
+            },
+            {
+                name: "Igem",
+                scientific: "Podocarpus rumphii",
+                type: "tree",
+                icon: "🌲",
+                description: "A native conifer with edible fleshy fruit bases.",
+                uses: "Ornamental, edible fruit base, timber",
+                extra: "One of the few native Philippine conifers. The fleshy part at the fruit base is sweet and edible."
+            },
+            {
+                name: "Almendras",
+                scientific: "Terminalia catappa",
+                type: "tree",
+                icon: "🌳",
+                description: "The tropical almond tree with edible nuts and colorful leaves.",
+                uses: "Shade tree, edible nuts, medicinal leaves",
+                extra: "Same as Talisay. The nuts taste similar to almonds and the leaves turn red before falling."
+            },
+            {
+                name: "Kupang",
+                scientific: "Parkia timoriana",
+                type: "tree",
+                icon: "🌳",
+                description: "A tall tree with round flower heads and edible seeds.",
+                uses: "Seeds eaten as vegetables, wood for construction",
+                extra: "Kupang seeds are fermented and eaten as a pungent condiment in Northern Philippines, similar to Japanese natto."
+            },
+            {
+                name: "Kupang Gubat",
+                scientific: "Parkia javanica",
+                type: "tree",
+                icon: "🌳",
+                description: "A wild variety of kupang with similar edible seeds.",
+                uses: "Edible seeds, traditional food, wood",
+                extra: "The wild kupang has the same pungent fermented seeds popular in Ilocano cuisine."
+            },
+            {
+                name: "Akle",
+                scientific: "Albizzia acle",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree producing very hard, termite-resistant wood.",
+                uses: "Premium furniture, construction, tool handles",
+                extra: "Akle wood is extremely hard and naturally resistant to termites. It's highly valued for premium woodwork."
+            },
+            {
+                name: "Tamayuan",
+                scientific: "Strombosia philippinensis",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with hard yellowish wood and edible fruits.",
+                uses: "Furniture, construction, edible fruits",
+                extra: "Tamayuan produces durable wood with an attractive grain. The fruits are eaten by wildlife."
+            },
+            {
+                name: "Marang Gubat",
+                scientific: "Artocarpus lanceifolius",
+                type: "fruit",
+                icon: "🟢",
+                description: "A wild relative of marang with smaller fruits.",
+                uses: "Edible fruits, wood for construction",
+                extra: "The wild marang fruits are smaller but equally delicious. The tree grows naturally in Philippine forests."
+            },
+            {
+                name: "Rimas",
+                scientific: "Artocarpus blancoi",
+                type: "fruit",
+                icon: "🟠",
+                description: "A breadfruit relative endemic to the Philippines.",
+                uses: "Edible fruits, seeds are edible when cooked",
+                extra: "Rimas is closely related to breadfruit. Both the flesh and seeds are edible when properly prepared."
+            },
+            {
+                name: "Kamansi",
+                scientific: "Artocarpus camansi",
+                type: "fruit",
+                icon: "🟢",
+                description: "The breadnut tree, a seedier version of breadfruit.",
+                uses: "Seeds eaten like chestnuts, immature fruits as vegetables",
+                extra: "Kamansi seeds are nutritious and taste like chestnuts when roasted. The tree is cultivated for food."
+            },
+            {
+                name: "Kalumpit Gubat",
+                scientific: "Terminalia foetidissima",
+                type: "tree",
+                icon: "🌳",
+                description: "A wild kalumpit with smaller fruits and hardy wood.",
+                uses: "Construction, charcoal, traditional medicine",
+                extra: "This forest variety is hardier than cultivated kalumpit. The wood is excellent for outdoor construction."
+            },
+            {
+                name: "Dalindingan",
+                scientific: "Ehretia acuminata",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with small white flowers and small edible fruits.",
+                uses: "Edible fruits, wood for furniture, shade tree",
+                extra: "Dalindingan fruits are tiny but sweet. The tree is planted for shade and its useful timber."
+            },
+            {
+                name: "Anonang",
+                scientific: "Polyalthia longifolia",
+                type: "ornamental",
+                icon: "🌲",
+                description: "A narrow columnar tree popular for lining driveways.",
+                uses: "Ornamental, windbreak, avenue tree",
+                extra: "Anonang's distinctive narrow shape makes it perfect for formal plantings and driveways. It's very popular in landscaping."
+            },
+            {
+                name: "Ilang-ilang de China",
+                scientific: "Michelia champaca",
+                type: "ornamental",
+                icon: "🟡",
+                description: "A tree with golden fragrant flowers used in perfume.",
+                uses: "Perfume, ornamental, religious offerings",
+                extra: "The flowers are extremely fragrant and valuable in perfume industry. It's sacred in many Asian cultures."
+            },
+            {
+                name: "Kulasiman",
+                scientific: "Garcinia binucao",
+                type: "fruit",
+                icon: "🟠",
+                description: "A mangosteen relative with sour fruits used in cooking.",
+                uses: "Souring agent, traditional medicine, wood",
+                extra: "Kulasiman is used similarly to tamarind for souring Filipino dishes. It's a native relative of mangosteen."
+            },
+            {
+                name: "Batuan",
+                scientific: "Garcinia binucao",
+                type: "fruit",
+                icon: "🟢",
+                description: "A sour fruit essential to Ilonggo cuisine.",
+                uses: "Souring agent for KBL soup, preserves",
+                extra: "Batuan is indispensable in Western Visayan cooking, especially in the famous KBL (kadyos, baboy, langka) soup."
+            },
+            {
+                name: "Bignai",
+                scientific: "Antidesma bunius",
+                type: "fruit",
+                icon: "🔴",
+                description: "Small tart berries growing in clusters on trees.",
+                uses: "Fresh fruit, wine, preserves, juice",
+                extra: "Bignai is similar to cranberries in tartness. It's made into refreshing juice and wine."
+            },
+            {
+                name: "Lipote",
+                scientific: "Syzygium polycephaloides",
+                type: "fruit",
+                icon: "🔴",
+                description: "A small tree with tiny purple berries.",
+                uses: "Edible berries, ornamental, wood",
+                extra: "Lipote produces abundant tiny sweet berries. Children love picking and eating them directly from the tree."
+            },
+            {
+                name: "Malaruhat",
+                scientific: "Syzygium malaccense",
+                type: "fruit",
+                icon: "🔴",
+                description: "A mountain apple tree with bell-shaped crisp fruits.",
+                uses: "Edible fruit, ornamental, shade tree",
+                extra: "Malaruhat fruits are crisp and mildly sweet. The tree is beautiful with pink flowers and attractive fruits."
+            },
+            {
+                name: "Lumbang",
+                scientific: "Aleurites moluccanus",
+                type: "tree",
+                icon: "🌳",
+                description: "The candlenut tree with oil-rich seeds used for lighting.",
+                uses: "Lamp oil, wood finish, traditional medicine",
+                extra: "Lumbang seeds are so oily they can be burned like candles. The oil is also used as wood polish."
+            },
+            {
+                name: "Tuba-tuba",
+                scientific: "Jatropha curcas",
+                type: "medicinal",
+                icon: "🌿",
+                description: "A shrub with toxic seeds that yield biodiesel.",
+                uses: "Biodiesel production, medicinal (external use), living fence",
+                extra: "Despite being toxic, tuba-tuba has important uses. It's being developed as a biodiesel crop."
+            },
+            {
+                name: "Bani (Pongamia)",
+                scientific: "Pongamia pinnata",
+                type: "tree",
+                icon: "🌳",
+                description: "A nitrogen-fixing tree with oil-rich seeds.",
+                uses: "Biodiesel, traditional medicine, shade tree, soil improvement",
+                extra: "Bani seed oil is being developed for biodiesel. The tree also enriches soil and provides excellent shade."
+            },
+            {
+                name: "Molave Gubat",
+                scientific: "Vitex turczaninowii",
+                type: "tree",
+                icon: "🌳",
+                description: "A wild molave variety with similar hard wood.",
+                uses: "Heavy construction, furniture, tool handles",
+                extra: "The wild molave is as hard as cultivated varieties. It's found in old-growth forests."
+            },
+            {
+                name: "Tugas",
+                scientific: "Vitex parviflora",
+                type: "tree",
+                icon: "🌳",
+                description: "Another name for molave, emphasizing its strength.",
+                uses: "Construction, shipbuilding, heavy-duty furniture",
+                extra: "Tugas wood is legendary for its hardness and durability. It's the ultimate symbol of strength."
+            },
+            {
+                name: "Malatapay",
+                scientific: "Tristaniopsis micrantha",
+                type: "tree",
+                icon: "🌳",
+                description: "A tree with peeling bark and extremely hard wood.",
+                uses: "Heavy construction, posts, charcoal",
+                extra: "Malatapay has beautiful peeling bark revealing colorful layers. The wood is remarkably hard and durable."
+            },
+            {
+                name: "Anonang Bilog",
+                scientific: "Polyalthia rumphii",
+                type: "tree",
+                icon: "🌳",
+                description: "A rounded variety of anonang with broader crown.",
+                uses: "Ornamental, shade tree, timber",
+                extra: "Unlike the narrow columnar anonang, this variety has a rounded spreading crown perfect for shade."
+            },
+            {
+                name: "Marang Kalabaw",
+                scientific: "Artocarpus anisophyllus",
+                type: "fruit",
+                icon: "🟢",
+                description: "A wild marang with larger, coarser fruits.",
+                uses: "Edible fruits, seeds edible when cooked",
+                extra: "Marang kalabaw is wilder and larger than cultivated marang. The flavor is stronger and more rustic."
+            },
+            {
+                name: "Tibig Gubat",
+                scientific: "Ficus variegata",
+                type: "tree",
+                icon: "🌳",
+                description: "A wild fig with variegated leaves and small edible figs.",
+                uses: "Edible figs, traditional medicine, wildlife food",
+                extra: "This variegated fig provides important food for forest wildlife. The figs are small but edible."
+            }
+        ];
+
+        let currentFilter = 'all';
+        let searchTerm = '';
+
+        function renderPlants() {
+            const grid = document.getElementById('plantsGrid');
+            const noResults = document.getElementById('noResults');
+            
+            let filteredPlants = plantsData.filter(plant => {
+                const matchesFilter = currentFilter === 'all' || plant.type === currentFilter;
+                const matchesSearch = searchTerm === '' || 
+                    plant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    plant.uses.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    plant.description.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            if (filteredPlants.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            } else {
+                grid.style.display = 'grid';
+                noResults.style.display = 'none';
+            }
+
+            grid.innerHTML = filteredPlants.map((plant, index) => `
+                <div class="plant-card" onclick="showPlantDetails(${index})">
+                    <div class="plant-image">${plant.icon}</div>
+                    <div class="plant-content">
+                        <h3 class="plant-name">${plant.name}</h3>
+                        <p class="plant-scientific">${plant.scientific}</p>
+                        <span class="plant-type">${plant.type.charAt(0).toUpperCase() + plant.type.slice(1)}</span>
+                        <p class="plant-description">${plant.description}</p>
+                        <p class="plant-uses">Uses: ${plant.uses}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showPlantDetails(index) {
+            const plant = plantsData.filter(p => {
+                const matchesFilter = currentFilter === 'all' || p.type === currentFilter;
+                const matchesSearch = searchTerm === '' || 
+                    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    p.uses.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    p.description.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesFilter && matchesSearch;
+            })[index];
+
+            document.getElementById('modalImage').textContent = plant.icon;
+            document.getElementById('modalName').textContent = plant.name;
+            document.getElementById('modalScientific').textContent = plant.scientific;
+            document.getElementById('modalType').textContent = plant.type.charAt(0).toUpperCase() + plant.type.slice(1);
+            document.getElementById('modalDescription').textContent = plant.description;
+            document.getElementById('modalUses').textContent = 'Uses: ' + plant.uses;
+            document.getElementById('modalExtra').innerHTML = `<p style="margin-top: 15px; color: #555; line-height: 1.6;">${plant.extra}</p>`;
+            
+            document.getElementById('plantModal').style.display = 'block';
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                renderPlants();
+            });
+        });
+
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            searchTerm = e.target.value;
+            renderPlants();
+        });
+
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('plantModal').style.display = 'none';
+        });
+
+        window.addEventListener('click', function(e) {
+            if (e.target.id === 'plantModal') {
+                document.getElementById('plantModal').style.display = 'none';
+            }
+        });
+
+        renderPlants();
+    </script>
+</body>
+</html>
